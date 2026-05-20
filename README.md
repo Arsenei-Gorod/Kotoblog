@@ -55,11 +55,58 @@
 ```text
 kittygram_blog/
 ├── api/
+│   ├── pagination.py
+│   └── urls.py
 ├── blog/
+│   ├── management/
+│   │   └── commands/
+│   │       └── load_initial_data.py
+│   ├── migrations/
+│   │   └── 0001_initial.py
+│   ├── admin.py
+│   ├── filters.py
+│   ├── models.py
+│   ├── permissions.py
+│   ├── serializers.py
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
 ├── cats/
+│   ├── migrations/
+│   │   └── 0001_initial.py
+│   ├── admin.py
+│   ├── filters.py
+│   ├── models.py
+│   ├── permissions.py
+│   ├── serializers.py
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
 ├── comments/
+│   ├── migrations/
+│   │   └── 0001_initial.py
+│   ├── admin.py
+│   ├── models.py
+│   ├── permissions.py
+│   ├── serializers.py
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
 ├── docs/
+│   ├── postman/
+│   │   └── kittygram_blog.postman_collection.json
+│   ├── api_endpoints.md
+│   ├── api_examples.md
+│   ├── deployment.md
+│   ├── deployment_diagram.md
+│   ├── diagrams.md
+│   ├── postman_requests.md
+│   └── use_case_diagram.md
 ├── kittygram_blog/
+│   ├── settings.py
+│   ├── urls.py
+│   ├── wsgi.py
+│   └── asgi.py
 ├── .dockerignore
 ├── .env.example
 ├── .gitignore
