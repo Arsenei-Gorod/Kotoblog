@@ -1,103 +1,121 @@
 # Kittygram Blog API
 
 ## Описание проекта
-Kittygram Blog API — REST API-сервис для ведения котоблога в рамках проекта Kittygram. Пользователи могут регистрироваться, создавать карточки своих котов, публиковать записи, добавлять категории, теги и комментарии, искать и фильтровать контент.
 
-## Возможности
-- регистрация и JWT-авторизация;
+**Kittygram Blog API** — учебный REST API-сервис для ведения котоблога в рамках проекта Kittygram.
+
+Проект разработан для курсовой работы по теме:  
+**«Разработка и развертывание REST API-сервиса для ведения котоблога в рамках проекта Kittygram на основе Django Rest Framework»**.
+
+Сервис позволяет пользователям регистрироваться, создавать карточки своих котов, публиковать записи котоблога, добавлять категории и теги, комментировать записи, искать и фильтровать контент. Пользователь может изменять и удалять только свои объекты, а администратор может управлять всеми данными через API и Django admin.
+
+## Возможности проекта
+
+- регистрация пользователей;
+- JWT-авторизация;
 - создание карточек котов;
+- редактирование и удаление только своих котов;
 - создание записей котоблога;
-- категории и теги;
-- комментарии;
-- поиск;
-- фильтрация;
-- сортировка;
+- редактирование и удаление только своих записей;
+- категории и теги для записей;
+- комментарии к записям;
+- редактирование и удаление только своих комментариев;
+- поиск по записям;
+- фильтрация по категории, тегу, коту, автору и статусу публикации;
+- сортировка записей;
 - пагинация;
-- права доступа owner-only;
+- разграничение прав доступа;
 - Swagger и Redoc;
-- Docker-развертывание.
+- Docker-развертывание;
+- PostgreSQL;
+- Nginx и Gunicorn;
+- Postman-коллекция для проверки API;
+- Mermaid-диаграммы в `docs`.
 
 ## Стек технологий
-Python 3.11, Django, Django REST Framework, PostgreSQL, Docker, Docker Compose, Nginx, Gunicorn, Simple JWT, Djoser, drf-spectacular, django-filter, Pillow.
+
+- Python 3.11+
+- Django
+- Django REST Framework
+- Djoser
+- Simple JWT
+- drf-spectacular
+- django-filter
+- Pillow
+- PostgreSQL
+- Docker
+- Docker Compose
+- Gunicorn
+- Nginx
+- Postman
+- Swagger / Redoc
 
 ## Структура проекта
+
 ```text
 kittygram_blog/
-├── manage.py
-├── requirements.txt
-├── Dockerfile
-├── docker-compose.yml
-├── nginx.conf
-├── .env.example
-├── kittygram_blog/
-├── cats/
-├── blog/
-├── comments/
 ├── api/
+├── blog/
+├── cats/
+├── comments/
 ├── docs/
-│   ├── api_endpoints.md
-│   ├── api_examples.md
-│   ├── deployment.md
-│   ├── deployment_diagram.md
-│   ├── diagrams.md
-│   ├── postman_requests.md
-│   ├── use_case_diagram.md
-│   └── postman/
-│       └── kittygram_blog.postman_collection.json
+├── kittygram_blog/
+├── .dockerignore
+├── .env.example
+├── .gitignore
+├── Dockerfile
 ├── README.md
-└── .gitignore
+├── docker-compose.yml
+├── manage.py
+├── nginx.conf
+└── requirements.txt
 ```
 
+Дополнительные материалы находятся в каталоге `docs/`:
+
+- `docs/api_endpoints.md` — полная таблица API-эндпоинтов;
+- `docs/api_examples.md` — примеры запросов и ответов;
+- `docs/deployment.md` — описание Docker-развертывания;
+- `docs/postman_requests.md` — описание проверочных Postman-запросов;
+- `docs/use_case_diagram.md` — Mermaid Use Case Diagram;
+- `docs/deployment_diagram.md` — Mermaid Deployment Diagram;
+- `docs/diagrams.md` — краткое описание диаграмм;
+- `docs/postman/kittygram_blog.postman_collection.json` — Postman-коллекция.
+
 ## Переменные окружения
-Файл `.env.example` содержит пример:
+
+Перед запуском через Docker создай файл `.env` на основе `.env.example`:
+
+```bash
+cp .env.example .env
+```
+
+Пример переменных:
+
+```env
+SECRET_KEY=django-insecure-kittygram-blog-secret-key-for-local-development
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
+POSTGRES_DB=kittygram_blog
+POSTGRES_USER=kittygram_user
+POSTGRES_PASSWORD=kittygram_password
+DB_HOST=db
+DB_PORT=5432
+```
 
 | Переменная | Назначение |
 | --- | --- |
 | `SECRET_KEY` | секретный ключ Django |
-| `DEBUG` | режим отладки: `True` или `False` |
-| `ALLOWED_HOSTS` | список разрешенных хостов через запятую |
+| `DEBUG` | режим отладки |
+| `ALLOWED_HOSTS` | разрешенные хосты через запятую |
 | `POSTGRES_DB` | имя базы данных PostgreSQL |
 | `POSTGRES_USER` | пользователь PostgreSQL |
 | `POSTGRES_PASSWORD` | пароль PostgreSQL |
 | `DB_HOST` | хост базы данных |
 | `DB_PORT` | порт базы данных |
 
-## Локальный запуск Linux / macOS
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-python manage.py migrate
-python manage.py createsuperuser
-python manage.py load_initial_data
-python manage.py runserver
-```
-
-Локальные адреса при запуске через `runserver`:
-
-| Адрес | Описание |
-| --- | --- |
-| `http://127.0.0.1:8000/api/posts/` | записи котоблога |
-| `http://127.0.0.1:8000/api/cats/` | коты |
-| `http://127.0.0.1:8000/api/schema/` | OpenAPI-схема |
-| `http://127.0.0.1:8000/api/docs/swagger/` | Swagger |
-| `http://127.0.0.1:8000/api/docs/redoc/` | Redoc |
-| `http://127.0.0.1:8000/admin/` | админ-панель |
-
-## Локальный запуск Windows PowerShell
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-python manage.py migrate
-python manage.py createsuperuser
-python manage.py load_initial_data
-python manage.py runserver
-```
-
 ## Запуск через Docker
+
 ```bash
 cp .env.example .env
 docker compose up -d --build
@@ -105,6 +123,20 @@ docker compose exec backend python manage.py migrate
 docker compose exec backend python manage.py createsuperuser
 docker compose exec backend python manage.py load_initial_data
 ```
+
+После запуска API будет доступен по адресу:
+
+- `http://localhost/api/posts/`
+- `http://localhost/api/cats/`
+- `http://localhost/api/categories/`
+- `http://localhost/api/tags/`
+- `http://localhost/admin/`
+
+Документация API:
+
+- `http://localhost/api/schema/`
+- `http://localhost/api/docs/swagger/`
+- `http://localhost/api/docs/redoc/`
 
 Полезные команды Docker:
 
@@ -118,40 +150,80 @@ docker compose down
 docker compose up -d --build
 ```
 
-## Проверка API
-- http://localhost/api/posts/
-- http://localhost/api/docs/swagger/
-- http://localhost/api/docs/redoc/
+## Локальный запуск Linux / macOS
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py load_initial_data
+python manage.py runserver
+```
+
+Локальные адреса:
+
+- `http://127.0.0.1:8000/api/posts/`
+- `http://127.0.0.1:8000/api/docs/swagger/`
+- `http://127.0.0.1:8000/api/docs/redoc/`
+- `http://127.0.0.1:8000/admin/`
+
+## Локальный запуск Windows PowerShell
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py load_initial_data
+python manage.py runserver
+```
 
 ## Основные эндпоинты
-| URL | Метод | Назначение | Права доступа | Тело запроса | Коды ответов |
-| --- | --- | --- | --- | --- | --- |
-| `/api/auth/users/` | POST | регистрация | все | `username`, `password` | 201, 400 |
-| `/api/auth/jwt/create/` | POST | получение JWT | все | `username`, `password` | 200, 401 |
-| `/api/auth/jwt/refresh/` | POST | обновление JWT | все | `refresh` | 200, 401 |
-| `/api/auth/jwt/verify/` | POST | проверка JWT | все | `token` | 200, 401 |
-| `/api/auth/users/me/` | GET | текущий пользователь | авторизованный | нет | 200, 401 |
-| `/api/cats/` | GET, POST | список и создание котов | чтение всем, создание авторизованным | `name`, `birth_year` | 200, 201, 400, 401 |
-| `/api/cats/{id}/` | GET, PATCH, DELETE | кот | чтение всем, изменение владельцу или админу | поля кота | 200, 403, 404 |
-| `/api/posts/` | GET, POST | список и создание записей | чтение всем, создание авторизованным | `cat`, `title`, `text` | 200, 201, 400, 401 |
-| `/api/posts/{id}/` | GET, PATCH, DELETE | запись | чтение всем, изменение автору или админу | поля записи | 200, 403, 404 |
-| `/api/categories/` | GET, POST | категории | чтение всем, изменение админу | `name`, `slug` | 200, 201, 403 |
-| `/api/tags/` | GET, POST | теги | чтение всем, изменение админу | `name`, `slug` | 200, 201, 403 |
-| `/api/posts/{post_id}/comments/` | GET, POST | комментарии записи | чтение всем, создание авторизованным | `text` | 200, 201, 400, 401 |
-| `/api/comments/{id}/` | GET, PATCH, DELETE | комментарий | чтение всем, изменение автору или админу | `text` | 200, 403, 404 |
-| `/api/schema/` | GET | OpenAPI-схема | все | нет | 200 |
-| `/api/docs/swagger/` | GET | Swagger UI | все | нет | 200 |
-| `/api/docs/redoc/` | GET | Redoc | все | нет | 200 |
+
+| URL | Метод | Назначение | Права доступа |
+| --- | --- | --- | --- |
+| `/api/auth/users/` | POST | регистрация пользователя | все |
+| `/api/auth/jwt/create/` | POST | получение JWT-токена | все |
+| `/api/auth/jwt/refresh/` | POST | обновление JWT-токена | все |
+| `/api/auth/jwt/verify/` | POST | проверка JWT-токена | все |
+| `/api/auth/users/me/` | GET | текущий пользователь | авторизованный |
+| `/api/cats/` | GET | список котов | все |
+| `/api/cats/` | POST | создание кота | авторизованный |
+| `/api/cats/{id}/` | GET | детали кота | все |
+| `/api/cats/{id}/` | PATCH, DELETE | изменение или удаление кота | владелец или админ |
+| `/api/posts/` | GET | список записей | все |
+| `/api/posts/` | POST | создание записи | авторизованный |
+| `/api/posts/{id}/` | GET | детали записи | все |
+| `/api/posts/{id}/` | PATCH, DELETE | изменение или удаление записи | автор или админ |
+| `/api/categories/` | GET | список категорий | все |
+| `/api/categories/` | POST | создание категории | админ |
+| `/api/tags/` | GET | список тегов | все |
+| `/api/tags/` | POST | создание тега | админ |
+| `/api/posts/{post_id}/comments/` | GET | комментарии записи | все |
+| `/api/posts/{post_id}/comments/` | POST | создание комментария | авторизованный |
+| `/api/comments/{id}/` | GET | детали комментария | все |
+| `/api/comments/{id}/` | PATCH, DELETE | изменение или удаление комментария | автор или админ |
+| `/api/schema/` | GET | OpenAPI-схема | все |
+| `/api/docs/swagger/` | GET | Swagger UI | все |
+| `/api/docs/redoc/` | GET | Redoc | все |
 
 ## Примеры запросов
-Регистрация:
+
+Регистрация пользователя:
+
 ```bash
 curl -X POST http://localhost/api/auth/users/ \
   -H "Content-Type: application/json" \
   -d '{"username":"arseniy","password":"StrongPass123"}'
 ```
 
-Получение токена:
+Получение JWT-токена:
+
 ```bash
 curl -X POST http://localhost/api/auth/jwt/create/ \
   -H "Content-Type: application/json" \
@@ -159,6 +231,7 @@ curl -X POST http://localhost/api/auth/jwt/create/ \
 ```
 
 Создание кота:
+
 ```bash
 curl -X POST http://localhost/api/cats/ \
   -H "Authorization: Bearer <access_token>" \
@@ -167,14 +240,16 @@ curl -X POST http://localhost/api/cats/ \
 ```
 
 Создание записи:
+
 ```bash
 curl -X POST http://localhost/api/posts/ \
   -H "Authorization: Bearer <access_token>" \
   -H "Content-Type: application/json" \
-  -d '{"cat":1,"title":"Первый день Мурки","text":"Сегодня Мурка впервые освоила новый дом и нашла любимую игрушку."}'
+  -d '{"cat":1,"title":"Первый день Мурки","text":"Сегодня Мурка впервые освоила новый дом и нашла любимую игрушку.","category":1,"tags":[1]}'
 ```
 
 Добавление комментария:
+
 ```bash
 curl -X POST http://localhost/api/posts/1/comments/ \
   -H "Authorization: Bearer <access_token>" \
@@ -182,29 +257,73 @@ curl -X POST http://localhost/api/posts/1/comments/ \
   -d '{"text":"Отличная история, ждем продолжения!"}'
 ```
 
-Поиск записи:
+Поиск и фильтрация:
+
 ```bash
 curl "http://localhost/api/posts/?search=корм"
+curl "http://localhost/api/posts/?category=uhod"
+curl "http://localhost/api/posts/?tags=kotenok"
+curl "http://localhost/api/posts/?cat=1"
+curl "http://localhost/api/posts/?author=arseniy"
+curl "http://localhost/api/posts/?ordering=-created_at"
 ```
 
 ## Postman
-Коллекция находится в `docs/postman/kittygram_blog.postman_collection.json`.
 
-Перед запуском коллекции создай суперпользователя и проверь переменные `admin_username` и `admin_password`. Запросы категорий и тегов используют `admin_access_token`, а кот, запись и комментарий создаются обычным пользователем через `access_token`. Негативный сценарий изменения чужой записи использует отдельный `second_access_token`.
+Postman-коллекция находится здесь:
 
-## Дополнительная документация
-- `docs/api_endpoints.md` — полная таблица endpoint'ов.
-- `docs/api_examples.md` — curl-примеры, успешные ответы и ошибки.
-- `docs/postman_requests.md` — список запросов Postman-коллекции.
-- `docs/deployment.md` — описание Docker-развертывания.
-- `docs/use_case_diagram.md` — Mermaid Use Case Diagram.
-- `docs/deployment_diagram.md` — Mermaid Deployment Diagram.
-- `docs/diagrams.md` — краткое текстовое описание диаграмм для курсовой.
+```text
+docs/postman/kittygram_blog.postman_collection.json
+```
+
+Перед запуском коллекции:
+
+1. Создай суперпользователя.
+2. Проверь переменные `admin_username` и `admin_password`.
+3. Запускай запросы последовательно.
+
+Категории и теги создаются через `admin_access_token`. Кот, запись и комментарий создаются обычным пользователем через `access_token`. Негативный сценарий изменения чужой записи использует `second_access_token`.
 
 ## Тестирование
+
+Через Docker:
+
 ```bash
 docker compose exec backend python manage.py test
 ```
 
+Локально:
+
+```bash
+python manage.py test
+```
+
+## Начальное наполнение
+
+Команда:
+
+```bash
+python manage.py load_initial_data
+```
+
+Создает базовые категории:
+
+- Уход
+- Питание
+- Здоровье
+- Игры
+- Истории
+- Советы владельцам
+
+И базовые теги:
+
+- котенок
+- ветеринар
+- корм
+- игрушки
+- характер
+- фотоистория
+
 ## Автор
+
 Арсений Городский

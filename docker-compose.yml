@@ -9,13 +9,19 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-kittygram_password}
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   backend:
     build: .
     env_file:
       - .env
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     volumes:
       - static_value:/app/staticfiles
       - media_value:/app/media
